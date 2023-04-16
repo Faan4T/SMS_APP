@@ -271,7 +271,10 @@ switch($cmd){
 						
 
 						// // sending reciets message
+                        $from_name = $subscriber['company_name'];
 
+                        $to_name = $subscriber['first_name'];
+						
 						$from = $subscriber['company_name'];
 
                         $to = $subscriber['first_name'];
@@ -322,67 +325,65 @@ switch($cmd){
 
 						// }
 
-						$sql = "insert into sms_history
+				// 		$sql = "insert into sms_history
 
-									(
+				// 					(
 
-										to_number,
+				// 						to_number,
 
-										from_number,
+				// 						from_number,
 
-										text,
+				// 						text,
 
-										media,
+				// 						media,
 
-										sms_sid,
+				// 						sms_sid,
 
-										direction,
+				// 						direction,
 
-										group_id,
+				// 						group_id,
 
-										user_id,
+				// 						user_id,
 
-										created_date,
+				// 						created_date,
 
-										is_sent,
-
-										
-
-										type
-
-									)
-
-								values
-
-									(
-
-										'".$to."',
-
-										'".$from."',
-
-										'".$body."',
-
-										'',
-
-										'unknown',
-
-										'out-bound',
-
-										'0',
-
-										'".$subscriber['id']."',
-
-										'".date('Y-m-d H:i:s')."',
-
-										'true',
+				// 						is_sent,
 
 										
 
-										'2'
+				// 						type
 
-									)";
-                                    // echo $sql;
-							mysqli_query($link,$sql);
+				// 					)
+
+				// 				values
+
+				// 					(
+
+				// 						'".$to."',
+
+				// 						'".$from."',
+
+				// 						'".$body."',
+
+				// 						'',
+
+				// 						'unknown',
+
+				// 						'out-bound',
+
+				// 						'0',
+
+				// 						'".$subscriber['id']."',
+
+				// 						'".date('Y-m-d H:i:s')."',
+
+				// 						'true',
+
+				// 						'2'
+
+				// 					)";
+                                // echo $sql;
+				// 			mysqli_query($link,$sql);
 
                             
 
@@ -393,16 +394,11 @@ switch($cmd){
                                 $rand = rand(0,sizeof($Assign_numbers)-1);
                                 $to = $Assign_numbers[$rand];
                                  
+                                 sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$subscriber['campaign_id'],'',false,0,array(),'to_name','from_name');
                                 
-                                sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$subscriber['campaign_id']);
                             }
         
-        
-                        
-                            
-                            
-						
-
+    
 						// print_r($responses);
 
 						//sendMessage("Trumpia API",$subsData['phone_number'],$body,array(),$_SESSION['user_id'],$groupID,"","true");

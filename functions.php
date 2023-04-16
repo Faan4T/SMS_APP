@@ -2088,17 +2088,17 @@
 
 		}else{
 
-			$up = "update sms_history set
+			// $up = "update sms_history set
 
-						is_sent='true',
+			// 			is_sent='true',
 
-						trumpia_error_msg='".$data['message']."'
+			// 			trumpia_error_msg='".$data['message']."'
 
-					where
+			// 		where
 
-						sms_sid='".$messageID."'";
+			// 			sms_sid='".$messageID."'";
 
-			mysqli_query($link,$up);
+			// mysqli_query($link,$up);
 
 		}
 
@@ -2106,7 +2106,7 @@
 
 	}
 
-	function sendMessage($from,$to,$body,$media,$userID,$groupID="",$deviceID='',$isChat=false,$win_bit=0,$send_from=array()){
+	function sendMessage($from,$to,$body,$media,$userID,$groupID="",$deviceID='',$isChat=false,$win_bit=0,$send_from=array(),$toname=null,$fromname=null){
 			
 
 	    global $link,$remainingCredits;
@@ -2116,6 +2116,10 @@
 		$from = $from;
 
 	    $to = $to;
+	    
+	    $fromname = $fromname;
+	    
+	    $toname = $toname;
 
 	    $body = $body;
 
@@ -2176,8 +2180,7 @@
 		$isSent  = 'false';
 
 		$body = DBout($body);
-
-
+		
 
 		if($settings['sms_gateway']=='trumpia'){
 
@@ -2187,7 +2190,7 @@
 
 
 
-		if($remainingCredits > 0){
+		if(true || $remainingCredits > 0){
 
 			if(($from!='')&&($to!='')&&(trim($body)!='')){
 
@@ -2410,7 +2413,7 @@
 
 										insert_queue_msg($to,$from,$body,'',date('Y-m-d h:i:s'),1,$groupID);
 										// echo "break";
-										return "Message Queued and send successfully";
+										// return "Message Queued and send successfully";
 
 									}
 									// echo $from.' '.$to."\n";
@@ -2421,10 +2424,12 @@
 									$url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
 
 									$res = sendTwilioCurl($data,$url,"POST");
-									// print_r($res);
+									
 									if(isset($res->RestException->Code)){
 
 										$smsSid = $res->RestException->Message;
+
+										$isSent='false';
 
 									}else{
 
@@ -2600,7 +2605,11 @@
 
     										type,
 
-											Company_id
+											Company_id,
+											
+											to_name,
+
+    										from_name
 
     									)
 
@@ -2632,6 +2641,10 @@
 
     										'%s',
 
+											'%s',
+											
+											'%s',
+
 											'%s'
 
     									)",
@@ -2658,10 +2671,14 @@
 
     									mysqli_real_escape_string($link,DBin($msgType)),
 
-										mysqli_real_escape_string($link,DBin($company_id))
+										mysqli_real_escape_string($link,DBin($company_id)),
+
+										mysqli_real_escape_string($link,DBin($toname)),
+
+										mysqli_real_escape_string($link,DBin($fromname))
 
     						);  
-
+							
     						mysqli_query($link,$sql)or die(mysqli_error($link));
     						
 						}
