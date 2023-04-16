@@ -2421,9 +2421,9 @@
 									// End limit check
 									
 
-									$url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
+									// $url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
 
-									$res = sendTwilioCurl($data,$url,"POST");
+									// $res = sendTwilioCurl($data,$url,"POST");
 									
 									if(isset($res->RestException->Code)){
 
