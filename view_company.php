@@ -8,7 +8,7 @@ include_once("left_menu.php");
 
 <div class="main-panel">
 
-	<?php include_once('navbar.php');?>
+	<?php include_once('navbar.php'); ?>
 
 	<div class="content">
 
@@ -24,7 +24,7 @@ include_once("left_menu.php");
 
 							<h4 class="title">Company
 
-								<input type="button" class="btn btn-primary move-right" value="Add New" onclick="window.location='add_company.php'" />
+								<input style="float: right!important;" type="button" class="btn btn-primary" value="Add New" onclick="window.location='add_company.php'" />
 
 							</h4>
 
@@ -36,25 +36,25 @@ include_once("left_menu.php");
 
 						<?php
 
-						$sql_campaign = mysqli_query($link,sprintf("select * from companies where user_id=%s ",
+						$sql_campaign = mysqli_query($link, sprintf(
+							"select * from companies where user_id=%s ",
 
-							mysqli_real_escape_string($link,filterVar($_SESSION['user_id']))
+							mysqli_real_escape_string($link, filterVar($_SESSION['user_id']))
 
 						));
 
 
 
-						if(isset($_REQUEST['search']) && $_REQUEST['search'] != ''){
+						if (isset($_REQUEST['search']) && $_REQUEST['search'] != '') {
 
-							$sql_campaign = mysqli_query($link,"SELECT * FROM `companies` WHERE `name` LIKE '%".$_REQUEST['search']."%' and user_id=".$_SESSION['user_id']."") or die(mysqli_error($link));
-
+							$sql_campaign = mysqli_query($link, "SELECT * FROM `companies` WHERE `name` LIKE '%" . $_REQUEST['search'] . "%' and user_id=" . $_SESSION['user_id'] . "") or die(mysqli_error($link));
 						}
 
 
 
 						?>
 
-						<div class="col-md-4"><span class="badge badge-success"><?php echo 'Total : '.mysqli_num_rows($sql_campaign); ?></span></div><br>
+						<div class="col-md-4"><span class="badge badge-success"><?php echo 'Total : ' . mysqli_num_rows($sql_campaign); ?></span></div><br>
 
 						<div class="content table-responsive table-full-width">
 
@@ -66,7 +66,7 @@ include_once("left_menu.php");
 
 									<div class="col-md-5">
 
-										<input type="text" name="search" id="search" class="form-control" placeholder="Search clients" value="<?php echo DBout($_REQUEST['search'])?>" />
+										<input type="text" name="search" id="search" class="form-control" placeholder="Search clients" value="<?php echo DBout($_REQUEST['search']) ?>" />
 
 									</div>
 
@@ -79,167 +79,165 @@ include_once("left_menu.php");
 								</form>
 
 							</div>
+							<div class="content">
+								<div class="table-scroll">
+									<table id="campaignTable" class="table table-hover table-striped listTable" style="color:#999;">
 
-							<table id="campaignTable" class="table table-hover table-striped listTable">
+										<thead>
 
-								<thead>
+											<tr>
 
-									<tr>
+												<th>#</th>
 
-										<th>#</th>
- 
-										<th style="width: 10%">Name</th>
+												<th style="width: 10%">Name</th>
 
-										<th style="width: 40%">Description</th>
+												<th style="width: 40%">Description</th>
 
-										<th style="width: 20%">Site URL</th>
+												<th style="width: 20%">Site URL</th>
 
-										<th style="width: 20%">Total Compaings</th>
+												<th style="width: 20%">Total Compaings</th>
 
-										<th style="width: 20%">Total Customers</th>
+												<th style="width: 20%">Total Customers</th>
 
-										<th style="width: 20%">Assign Numbers</th>
+												<th style="width: 20%">Assign Numbers</th>
 
-										<th style="width: 10%">Manage</th>
+												<th style="width: 10%">Manage</th>
 
-									</tr>
+											</tr>
 
-								</thead>
+										</thead>
 
-								<tbody>
+										<tbody>
 
-								<?php
+											<?php
 
-								if(isset($_REQUEST['search']) && $_REQUEST['search'] != ''){
+											if (isset($_REQUEST['search']) && $_REQUEST['search'] != '') {
 
-									$sql ="SELECT * FROM `companies` WHERE `name` LIKE '%".$_REQUEST['search']."%' and user_id='".$_SESSION['user_id']."'";
+												$sql = "SELECT * FROM `companies` WHERE `name` LIKE '%" . $_REQUEST['search'] . "%' and user_id='" . $_SESSION['user_id'] . "'";
+											} else {
 
-								}else{
+												$sql = sprintf(
+													"select * from companies where user_id=%s order by id desc",
 
-									$sql = sprintf("select * from companies where user_id=%s order by id desc",
+													mysqli_real_escape_string($link, filterVar($_SESSION['user_id']))
 
-										mysqli_real_escape_string($link,filterVar($_SESSION['user_id']))
+												);
+											}
 
-									);
 
-								}
 
-								
+											if (is_numeric($_GET['page']))
 
-								if(is_numeric($_GET['page']))
+												$pageNum = $_GET['page'];
 
-									$pageNum = $_GET['page'];
+											else
 
-								else
+												$pageNum = 1;
 
-									$pageNum = 1;
+											$max_records_per_page = 20;
 
-								$max_records_per_page = 20;
+											$pagelink 	= "view_company.php?";
 
-								$pagelink 	= "view_company.php?";
+											$pages 		= generatePaging($sql, $pagelink, $pageNum, $max_records_per_page);
 
-								$pages 		= generatePaging($sql,$pagelink,$pageNum,$max_records_per_page);
+											$limit 		= $pages['limit'];
 
-								$limit 		= $pages['limit'];
+											$sql 	   .= $limit;
 
-								$sql 	   .= $limit;
+											if ($pageNum == 1)
 
-								if($pageNum==1)
+												$countPaging = 1;
 
-									$countPaging=1;
+											else
 
-								else
+												$countPaging = (($pageNum * $max_records_per_page) - $max_records_per_page) + 1;
 
-									$countPaging=(($pageNum*$max_records_per_page)-$max_records_per_page)+1;
 
 
+											if ($_SESSION['TOTAL_RECORDS'] <= $max_records_per_page) {
 
-								if($_SESSION['TOTAL_RECORDS'] <= $max_records_per_page){
+												$maxLimit = DBout($_SESSION['TOTAL_RECORDS']);
+											} else {
 
-									$maxLimit = DBout($_SESSION['TOTAL_RECORDS']);
+												$maxLimit = (((int)$countPaging + (int)$max_records_per_page) - 1);
+											}
 
-								}else{
+											if ($maxLimit >= $_SESSION['TOTAL_RECORDS']) {
 
-									$maxLimit = (((int)$countPaging+(int)$max_records_per_page)-1);
+												$maxLimit = DBout($_SESSION['TOTAL_RECORDS']);
+											}
 
-								}
 
-								if($maxLimit >= $_SESSION['TOTAL_RECORDS']){
 
-									$maxLimit =DBout( $_SESSION['TOTAL_RECORDS']);
+											$res = mysqli_query($link, $sql);
 
-								}
 
-								
 
-								$res = mysqli_query($link,$sql);
+											if (mysqli_num_rows($res)) {
 
-								
+												$index = DBout($countPaging);
 
-								if(mysqli_num_rows($res)){
+												while ($row = mysqli_fetch_assoc($res)) {
 
-									$index = DBout($countPaging);
+											?>
 
-									while($row = mysqli_fetch_assoc($res)){
+													<tr>
 
-								?>
+														<td><?php echo $index++; ?></td>
 
-										<tr>
+														<td><?php echo $row['name']; ?></td>
 
-											<td><?php echo $index++; ?></td>
+														<td><?php echo $row['description']; ?></td>
 
-											<td><?php echo $row['name']; ?></td>
+														<td><?php echo $row['website_url']; ?></td>
 
-											<td><?php echo $row['description']; ?></td>
+														<td><?php echo mysqli_fetch_assoc(mysqli_query($link, "SELECT COUNT(id) as Total FROM campaigns WHERE company_id=" . $row['id']))['Total']; ?></td>
 
-											<td><?php echo $row['website_url']; ?></td> 
+														<td><?php echo mysqli_fetch_assoc(mysqli_query($link, "SELECT COUNT(subscribers.id) AS Total FROM subscribers  LEFT JOIN subscribers_group_assignment AS a ON a.subscriber_id = subscribers.id LEFT JOIN campaigns ON campaigns.id = a.group_id WHERE campaigns.company_id=" . $row['id']))['Total']; ?></td>
 
-											<td><?php echo mysqli_fetch_assoc(mysqli_query($link,"SELECT COUNT(id) as Total FROM campaigns WHERE company_id=".$row['id']))['Total']; ?></td>
+														<td>
 
-											<td><?php echo mysqli_fetch_assoc(mysqli_query($link,"SELECT COUNT(subscribers.id) AS Total FROM subscribers  LEFT JOIN subscribers_group_assignment AS a ON a.subscriber_id = subscribers.id LEFT JOIN campaigns ON campaigns.id = a.group_id WHERE campaigns.company_id=".$row['id']))['Total']; ?></td>
+															<?php $InputArray = $row['Assign_numbers'];
 
-											<td>
+															echo str_replace(',', '<br>', $InputArray); ?></td>
 
-											    <?php $InputArray =$row['Assign_numbers'];
 
-											    echo str_replace(',', '<br>', $InputArray); ?></td>
 
-											
+														<td>
 
-											<td>
+															<a href="edit_company.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit" style="cursor: pointer; color: orange"></i></a>&nbsp;&nbsp;
 
-												<a href="edit_company.php?id=<?php echo $row['id']; ?>"><i class="fa fa-edit" style="cursor: pointer; color: orange"></i></a>&nbsp;&nbsp;
+															<i class="fa fa-trash-o" style="cursor: pointer; color: red;" onclick="deleteCompnay('<?php echo $row['id']; ?>')">
 
-												<i class="fa fa-trash-o" style="cursor: pointer; color: red;" onclick="deleteCompnay('<?php echo $row['id']; ?>')">
 
 
+															</i>
 
-                                                </i>
+														</td>
 
-											</td>
+													</tr>
 
-										</tr>
+											<?php
 
-								<?php
+												}
+											}
 
-									}
+											?>
 
-								}
+											<tr>
 
-								?>
+												<td colspan="4" class="padding-left-0 padding-right-0"><?php echo $pages['pagingString']; ?></td>
 
-								<tr>
+											</tr>
 
-									<td colspan="4" class="padding-left-0 padding-right-0"><?php echo $pages['pagingString'];?></td>
+										</tbody>
 
-								</tr>
+									</table>
 
-								</tbody>
+								</div>
 
-							</table>
-
+							</div>
 						</div>
-
 					</div>
 
 				</div>
@@ -250,11 +248,11 @@ include_once("left_menu.php");
 
 	</div>
 
-	<?php include_once("footer_info.php");?>
+	<?php include_once("footer_info.php"); ?>
 
 </div>
 
-<?php include_once("footer.php");?>
+<?php include_once("footer.php"); ?>
 
 <link rel="stylesheet" type="text/css" href="assets/css/stacktable.css" />
 
@@ -267,14 +265,16 @@ include_once("left_menu.php");
 <script src="scripts/view_campaign.js"></script>
 
 <script>
+	function deleteCompnay(id) {
 
-	function deleteCompnay(id){
+		if (confirm("Are you sure you want to delete this company?")) {
 
-		if(confirm("Are you sure you want to delete this company?")){
+			if (confirm("It will delete all data regarding with this company.")) {
 
-			if(confirm("It will delete all data regarding with this company.")){
-
-				$.post('server.php',{"cmd":"delete_company",id:id},function(){
+				$.post('server.php', {
+					"cmd": "delete_company",
+					id: id
+				}, function() {
 
 					window.location = 'view_company.php';
 
@@ -285,5 +285,4 @@ include_once("left_menu.php");
 		}
 
 	}
-
 </script>

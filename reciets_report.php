@@ -1,14 +1,14 @@
 <?php
 
-	include_once("header.php");
+include_once("header.php");
 
-	include_once("left_menu.php");
+include_once("left_menu.php");
 
 ?>
 
 <div class="main-panel">
 
-	<?php include_once('navbar.php');?>
+	<?php include_once('navbar.php'); ?>
 
 	<div class="content">
 
@@ -28,7 +28,7 @@
 
 								<input type="button" class="btn btn-primary" value="Back" style="float:right !important" onclick="window.location=history.go(-1)" />
 
-                            <!--    
+								<!--    
 
                                 <form action="server.php" style="margin: 0 8px;padding: 0;float: right;">
 
@@ -50,7 +50,7 @@
 
 						<div class="content table-responsive table-full-width">
 
-						<!--	
+							<!--	
 
 							<form style="margin: 0 5px 0 10px;">
 
@@ -58,7 +58,7 @@
 
 								<div class="col-md-5">
 
-									<input type="text" name="search" id="search" class="form-control" placeholder="Search by phone, text, sid" value="<?php echo $_REQUEST['search']?>" />
+									<input type="text" name="search" id="search" class="form-control" placeholder="Search by phone, text, sid" value="<?php echo $_REQUEST['search'] ?>" />
 
 								</div>
 
@@ -70,21 +70,23 @@
 
 									<?php
 
-									$sql2 = "select * from campaigns where user_id = '".$_SESSION['user_id']."'";
+									$sql2 = "select * from campaigns where user_id = '" . $_SESSION['user_id'] . "'";
 
-									$res2 = mysqli_query($link,$sql2);
+									$res2 = mysqli_query($link, $sql2);
 
-									while($row2 = mysqli_fetch_assoc($res2)){
+									while ($row2 = mysqli_fetch_assoc($res2)) {
 
-										?>
+									?>
 
-											<option <?php if($_REQUEST['group_id']==$row2['id']){ echo "selected"; } ?> value="<?php echo $row2['id']; ?>"><?php echo $row2['title'];?></option>
+											<option <?php if ($_REQUEST['group_id'] == $row2['id']) {
+														echo "selected";
+													} ?> value="<?php echo $row2['id']; ?>"><?php echo $row2['title']; ?></option>
 
 										<?php
 
 									}
 
-									?>
+										?>
 
 									</select>
 
@@ -96,9 +98,13 @@
 
 										<option value="">By Direction</option>
 
-										<option <?php if($_REQUEST['direction']=="in-bound"){ echo "selected"; } ?> value="in-bound">In-bound</option>
+										<option <?php if ($_REQUEST['direction'] == "in-bound") {
+													echo "selected";
+												} ?> value="in-bound">In-bound</option>
 
-										<option <?php if($_REQUEST['direction']=="out-bound"){ echo "selected"; } ?> value="out-bound">Out-bound</option>
+										<option <?php if ($_REQUEST['direction'] == "out-bound") {
+													echo "selected";
+												} ?> value="out-bound">Out-bound</option>
 
 									</select>
 
@@ -110,9 +116,13 @@
 
 										<option value="">By Status</option>
 
-										<option <?php if($_REQUEST['is_sent']=="true"){ echo "selected"; } ?> value="true">Sent</option>
+										<option <?php if ($_REQUEST['is_sent'] == "true") {
+													echo "selected";
+												} ?> value="true">Sent</option>
 
-										<option <?php if($_REQUEST['is_sent']=="false"){ echo "selected"; } ?> value="false">failed</option>
+										<option <?php if ($_REQUEST['is_sent'] == "false") {
+													echo "selected";
+												} ?> value="false">failed</option>
 
 									</select>
 
@@ -129,195 +139,190 @@
                             </form>
 
                         -->
+							<div class="content">
+								<div class="table-scroll">
 
-                            <table id="smsReportTable" class="table table-hover table-striped listTable">
+									<table id="smsReportTable" class="table table-hover table-striped listTable" style="color:#999;">
 
-								<thead>
+										<thead>
 
-									<tr>
+											<tr>
 
-										<th>#</th>
+												<th>#</th>
 
-										<th>From</th>
+												<th>From</th>
 
-										<th>To</th>
+												<th>To</th>
 
-										<th>Text</th>
+												<th>Text</th>
 
-										<th>Sent Date</th>
+												<th>Sent Date</th>
 
-										<th style="width: 80px;">Info</th>
+												<th style="width: 80px;">Info</th>
 
-									</tr>
+											</tr>
 
-								</thead>
+										</thead>
 
-								<tbody>
+										<tbody>
 
-			<?php
+											<?php
 
-				
 
-                $where = "where user_id='".$_SESSION['user_id']."' and type='2'";
 
-				$where = "where  type='2'";
+											$where = "where user_id='" . $_SESSION['user_id'] . "' and type='2'";
 
+											$where = "where  type='2'";
 
 
 
-                if(isset($_REQUEST['search']) && $_REQUEST['search']!=''){
 
-                    $where .= " and (to_number like '%".$_REQUEST['search']."%' or from_number like '%".$_REQUEST['search']."%' or text like '%".$_REQUEST['search']."%' or sms_sid like '%".$_REQUEST['search']."%')";
+											if (isset($_REQUEST['search']) && $_REQUEST['search'] != '') {
 
-                }
+												$where .= " and (to_number like '%" . $_REQUEST['search'] . "%' or from_number like '%" . $_REQUEST['search'] . "%' or text like '%" . $_REQUEST['search'] . "%' or sms_sid like '%" . $_REQUEST['search'] . "%')";
+											}
 
-                
 
-                if(isset($_REQUEST['group_id']) && $_REQUEST['group_id']!=''){
 
-                    $where .= " and group_id = $_REQUEST[group_id]";
+											if (isset($_REQUEST['group_id']) && $_REQUEST['group_id'] != '') {
 
-                }
+												$where .= " and group_id = $_REQUEST[group_id]";
+											}
 
-                
 
-                if(isset($_REQUEST['direction']) && $_REQUEST['direction']!=''){
 
-                    $where .= " and direction = '".$_REQUEST['direction']."'";
+											if (isset($_REQUEST['direction']) && $_REQUEST['direction'] != '') {
 
-                }
+												$where .= " and direction = '" . $_REQUEST['direction'] . "'";
+											}
 
-                
 
-                if(isset($_REQUEST['is_sent']) && $_REQUEST['is_sent']!=''){
 
-                    $where .= " and is_sent = '".$_REQUEST['is_sent']."'";
+											if (isset($_REQUEST['is_sent']) && $_REQUEST['is_sent'] != '') {
 
-                }
+												$where .= " and is_sent = '" . $_REQUEST['is_sent'] . "'";
+											}
 
-                
 
-                $sql = "select * from sms_history $where order by id desc";
 
-                $_SESSION['sql_history'] = $sql; 
+											$sql = "select * from sms_history $where order by id desc";
 
-				if(is_numeric($_GET['page']))
+											$_SESSION['sql_history'] = $sql;
 
-					$pageNum = $_GET['page'];
+											if (is_numeric($_GET['page']))
 
-				else
+												$pageNum = $_GET['page'];
 
-					$pageNum = 1;
+											else
 
-				$max_records_per_page = 20;
+												$pageNum = 1;
 
-				$pagelink 	= "reciets_report.php?search=".$_REQUEST['search']."&group_id=".$_REQUEST['group_id']."&direction=".$_REQUEST['direction']."&is_sent=".$_REQUEST['is_sent']."&";
+											$max_records_per_page = 20;
 
-				$pages 		= generatePaging($sql,$pagelink,$pageNum,$max_records_per_page);
+											$pagelink 	= "reciets_report.php?search=" . $_REQUEST['search'] . "&group_id=" . $_REQUEST['group_id'] . "&direction=" . $_REQUEST['direction'] . "&is_sent=" . $_REQUEST['is_sent'] . "&";
 
-				$limit 		= $pages['limit'];
+											$pages 		= generatePaging($sql, $pagelink, $pageNum, $max_records_per_page);
 
-				$sql 	   .= $limit;
+											$limit 		= $pages['limit'];
 
-				if($pageNum==1)
+											$sql 	   .= $limit;
 
-					$countPaging=1;
+											if ($pageNum == 1)
 
-				else
+												$countPaging = 1;
 
-					$countPaging=(($pageNum*$max_records_per_page)-$max_records_per_page)+1;
+											else
 
-							
+												$countPaging = (($pageNum * $max_records_per_page) - $max_records_per_page) + 1;
 
-				if($_SESSION['TOTAL_RECORDS'] <= $max_records_per_page){
 
-					$maxLimit = $_SESSION['TOTAL_RECORDS'];	
 
-				}else{
+											if ($_SESSION['TOTAL_RECORDS'] <= $max_records_per_page) {
 
-					$maxLimit = (((int)$countPaging+(int)$max_records_per_page)-1);
+												$maxLimit = $_SESSION['TOTAL_RECORDS'];
+											} else {
 
-				}
+												$maxLimit = (((int)$countPaging + (int)$max_records_per_page) - 1);
+											}
 
-				if($maxLimit >= $_SESSION['TOTAL_RECORDS']){
+											if ($maxLimit >= $_SESSION['TOTAL_RECORDS']) {
 
-					$maxLimit = $_SESSION['TOTAL_RECORDS'];	
+												$maxLimit = $_SESSION['TOTAL_RECORDS'];
+											}
 
-				}
+											$res = mysqli_query($link, $sql);
 
-				$res = mysqli_query($link,$sql);
+											if (mysqli_num_rows($res)) {
 
-				if(mysqli_num_rows($res)){
+												$index = $countPaging;
 
-					$index = $countPaging;
+												while ($row = mysqli_fetch_assoc($res)) {
 
-					while($row = mysqli_fetch_assoc($res)){
+													if (($row['trumpia_error_code'] == '') && ($row['is_sent'] == 'false')) {
 
-						if(($row['trumpia_error_code']=='') && ($row['is_sent']=='false')){ 
+														$trumpiaStatus = checkTrumpiaMessageStatus($row['sms_sid']);
+													}
 
-							$trumpiaStatus = checkTrumpiaMessageStatus($row['sms_sid']);
+											?>
 
-						}
+													<tr>
 
-			?>
+														<td><?php echo $index++; ?></td>
 
-						<tr>
+														<td><?php echo $row['from_name']; ?></td>
 
-							<td><?php echo $index++; ?></td>
+														<td><?php echo $row['to_name']; ?></td>
 
-							<td><?php echo $row['from_name']; ?></td>
+														<td><?php echo $row['text'] ?></td>
 
-							<td><?php echo $row['to_name']; ?></td>
+														<td><?php echo date($appSettings['app_date_format'] . ' H:i:s', strtotime($row['created_date'])) ?></td>
 
-							<td><?php echo $row['text']?></td>
+														<td style="text-align: center">
 
-							<td><?php echo date($appSettings['app_date_format'].' H:i:s',strtotime($row['created_date']))?></td>
+															<?php
 
-							<td style="text-align: center">
+															if ($row['is_sent'] == 'false') {
 
-								<?php
+															?>
 
-									if($row['is_sent']=='false'){
+																<a href="#smsInfoModel" data-toggle="modal" onclick="getMessageDetails('<?php echo $row['id'] ?>')"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size:22px; color:orange"></i></a>
 
-								?>
+															<?php
 
-								<a href="#smsInfoModel" data-toggle="modal" onclick="getMessageDetails('<?php echo $row['id']?>')"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size:22px; color:orange"></i></a>
+															} else {
 
-								<?php
+															?>
 
-									}else{
+																<a href="#smsInfoModel" data-toggle="modal" onclick="getMessageDetails('<?php echo $row['id'] ?>')"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size:22px; color:green"></i></a>
 
-								?>
+															<?php
 
-								<a href="#smsInfoModel" data-toggle="modal" onclick="getMessageDetails('<?php echo $row['id']?>')"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size:22px; color:green"></i></a>
+															}
 
-								<?php		
+															?>
 
-									}
+														</td>
 
-								?>
+													</tr>
 
-							</td>
+											<?php
 
-						</tr>
+												}
+											}
 
-			<?php			
+											?>
 
-					}
+											<tr>
 
-				}
+												<td colspan="8" style="padding-left:0px !important;padding-right:0px !important"><?php echo $pages['pagingString']; ?></td>
 
-			?>
+											</tr>
 
-				<tr>
+										</tbody>
 
-					<td colspan="8" style="padding-left:0px !important;padding-right:0px !important"><?php echo $pages['pagingString'];?></td>
-
-				</tr>
-
-		</tbody>
-
-							</table>
+									</table>
+								</div>
+							</div>
 
 						</div>
 
@@ -331,13 +336,13 @@
 
 	</div>
 
-	<?php include_once("footer_info.php");?>
+	<?php include_once("footer_info.php"); ?>
 
 </div>
 
 <div id="smsInfoModel" class="modal fade" role="dialog">
 
-	<div class="modal-dialog"> 
+	<div class="modal-dialog">
 
 		<div class="modal-content">
 
@@ -357,21 +362,23 @@
 
 </div>
 
-<?php include_once("footer.php");?>
+<?php include_once("footer.php"); ?>
 
 <link rel="stylesheet" type="text/css" href="assets/css/stacktable.css" />
 
 <script type="text/javascript" src="assets/js/stacktable.js"></script>
 
 <script>
-
 	$('#smsReportTable').cardtable();
 
-	function getMessageDetails(msgID){
+	function getMessageDetails(msgID) {
 
 		$('#loading').show();
 
-		$.post('server.php',{"cmd":"get_message_details","msg_id":msgID},function(r){
+		$.post('server.php', {
+			"cmd": "get_message_details",
+			"msg_id": msgID
+		}, function(r) {
 
 			$('#loading').hide();
 
@@ -380,5 +387,4 @@
 		});
 
 	}
-
 </script>
