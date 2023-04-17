@@ -1,7 +1,7 @@
 <?php
                                 $hostname = "localhost";
-                                $username = "koltext_tpaysUser";
+                                $username = "local_user";
                                 $password = "C5ou01{c8H_]";
-                                $database = "koltext_Tpays";
+                                $database = "koltext_db";
                                 $link = mysqli_connect($hostname, $username, $password, $database);
                             ?>

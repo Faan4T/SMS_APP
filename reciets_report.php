@@ -265,9 +265,9 @@
 
 							<td><?php echo $index++; ?></td>
 
-							<td><?php echo $row['from_number']; ?></td>
+							<td><?php echo $row['from_name']; ?></td>
 
-							<td><?php echo $row['to_number']; ?></td>
+							<td><?php echo $row['to_name']; ?></td>
 
 							<td><?php echo $row['text']?></td>
 

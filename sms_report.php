@@ -120,7 +120,7 @@
 
                             </form>
 
-                            <table id="smsReportTable" class="table table-hover table-striped listTable">
+                            <table id="smsReportTable" class="table table-hover table-striped listTable" style="max-width:300px;">
 
 								<thead>
 
