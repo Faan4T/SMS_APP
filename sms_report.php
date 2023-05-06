@@ -154,9 +154,13 @@
 
 			
 
+$where = "where user_id='" . $_SESSION['user_id'] . "' and type='1'";
+
+$where = "where  type='1'";
+
 				
 
-                $where = "where user_id='".$_SESSION['user_id']."' ";
+                // $where = "where user_id='".$_SESSION['user_id']."' ";
 
                 if(isset($_REQUEST['search']) && $_REQUEST['search']!=''){
 
