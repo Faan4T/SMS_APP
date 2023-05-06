@@ -394,7 +394,7 @@ switch($cmd){
                                 $rand = rand(0,sizeof($Assign_numbers)-1);
                                 $to = $Assign_numbers[$rand];
                                  
-                                 sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$subscriber['campaign_id'],'',false,0,array(),$to_name,$from_name);
+                                 sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$subscriber['campaign_id'],'',false,0,array(),$to_name,$from_name,2);
                                 
                             }
         
@@ -535,6 +535,8 @@ switch($cmd){
 
 	case "send_notification_to_customers":{
 
+      
+
 		$clientID = $_REQUEST['clientID'];
 
 		$sql = "select * from campaigns where id='".$clientID."' and user_id='".$_SESSION['user_id']."' and type='6'";
@@ -582,6 +584,10 @@ switch($cmd){
 				while($subscriber = mysqli_fetch_assoc($exe)){
 
 					$subscriberInfo = getSubscriberDetailsByNumber($subscriber['phone_number']);
+
+                    $from_name = $subscriberInfo['first_name'];
+
+                    $to_name = $subscriberInfo['last_name'];
 
 					$paymentUrl = $companyData['website_url'].'/payment.php?cmny_id='.$row['company_id'].'&clnt_id='.$row['id'].'&clnt_acc_id='.$subscriberInfo['account_number'].'&amnt='.$subscriberInfo['amount_to_be_paid'].'&sid='.$subscriberInfo['id'];
 
@@ -642,7 +648,7 @@ switch($cmd){
 					$remainingCredits = '5000';
 					// echo "sending msges";
 					 // echo $to.' '.$from.' '.$body.' '.$_SESSION['user_id'].' '.$clientID;
-					sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$clientID,'',false,0,$Assign_numbers);
+					sendMessage($to,$from,$body,array(),$_SESSION['user_id'],$clientID,'',false,0,$Assign_numbers,$to_name,$from_name,1);
 					// echo "send msg success";
 					$totalSend++;
 
@@ -1012,7 +1018,10 @@ switch($cmd){
 
 		$sql = "select * from companies where name='".$companyName."' and user_id='".$_SESSION['user_id']."'";
 
-		$res = mysqli_query($sql);
+		// $res = mysqli_query($sql);
+
+		$res = mysqli_query($link,$sql);
+
 
 		if(mysqli_num_rows($res)==0){
 
@@ -12317,7 +12326,9 @@ switch($cmd){
 
             );
 
-        $res = mysqli_query($link,$sql);
+        // $res = mysqli_query($link,$sql);
+
+        $res[] = mysqli_query($link,$sql);
 
         if(count($res)>0){ ?>
 
