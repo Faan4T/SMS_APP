@@ -8948,7 +8948,7 @@ switch($cmd){
 
             }else{
 
-                $endPoint   = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+                $endPoint  = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 
                 $businessEmail = $appSettings['paypal_sandbox_email'];
 
