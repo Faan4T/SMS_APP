@@ -2088,17 +2088,17 @@
 
 		}else{
 
-			// $up = "update sms_history set
+			$up = "update sms_history set
 
-			// 			is_sent='true',
+						is_sent='true',
 
-			// 			trumpia_error_msg='".$data['message']."'
+						trumpia_error_msg='".$data['message']."'
 
-			// 		where
+					where
 
-			// 			sms_sid='".$messageID."'";
+						sms_sid='".$messageID."'";
 
-			// mysqli_query($link,$up);
+			mysqli_query($link,$up);
 
 		}
 
@@ -2106,7 +2106,7 @@
 
 	}
 
-	function sendMessage($from,$to,$body,$media,$userID,$groupID="",$deviceID='',$isChat=false,$win_bit=0,$send_from=array(),$toname=null,$fromname=null,$msg_Type=null){
+	function sendMessage($from,$to,$body,$media,$userID,$groupID="",$deviceID='',$isChat=false,$win_bit=0,$send_from=array()){
 			
 
 	    global $link,$remainingCredits;
@@ -2116,10 +2116,6 @@
 		$from = $from;
 
 	    $to = $to;
-	    
-	    $fromname = $fromname;
-	    
-	    $toname = $toname;
 
 	    $body = $body;
 
@@ -2175,14 +2171,13 @@
 
 		$smsSid  = '';
 
-		// $msgType = '';
-
-	    $msgType = $msg_Type;
+		$msgType = '';
 
 		$isSent  = 'false';
 
 		$body = DBout($body);
-		
+
+
 
 		if($settings['sms_gateway']=='trumpia'){
 
@@ -2192,7 +2187,7 @@
 
 
 
-		if(true || $remainingCredits > 0){
+		if($remainingCredits > 0){
 
 			if(($from!='')&&($to!='')&&(trim($body)!='')){
 
@@ -2298,12 +2293,10 @@
 
 								
 
-							if($fromNumberInfo['type']==4){
+								if($fromNumberInfo['type']==4){
 
 									if(trim($media)!=''){
-										
-										$msgType = null;
-										
+
 										$data = array(
 
 											"To" => "whatsapp:".$to,
@@ -2316,11 +2309,7 @@
 
 										);
 
-
-										//  $msgType = 'mms';
-										
-										$msgType  = '3';
-
+										$msgType = 'mms';
 
 									}else{
 
@@ -2334,10 +2323,8 @@
 
 										);
 
-										//$msgType = 'sms';
-										//$msgType  = '2'; 
+										$msgType = 'sms';
 
-										$msgType = $msg_Type; //RECEITE PAYMENTS
 									}
 
 									$url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
@@ -2374,8 +2361,6 @@
 
 									if(trim($media)!=''){
 
-										$msgType=null;
-
 										$data = array(
 
 											"To" => $to,
@@ -2388,9 +2373,7 @@
 
 										);
 
-										// $msgType = 'mms';
-										$msgType = 3;
-
+										$msgType = 'mms';
 
 									}else{
 
@@ -2404,10 +2387,8 @@
 
 										);
 
-										// $msgType = 'sms';
-										//$msgType  = '2';
+										$msgType = 'sms';
 
-										$msgType = $msg_Type; //RECEITE PAYMENTS
 									}
 
 
@@ -2429,7 +2410,7 @@
 
 										insert_queue_msg($to,$from,$body,'',date('Y-m-d h:i:s'),1,$groupID);
 										// echo "break";
-										// return "Message Queued and send successfully";
+										return "Message Queued and send successfully";
 
 									}
 									// echo $from.' '.$to."\n";
@@ -2437,23 +2418,21 @@
 									// End limit check
 									
 
-									 $url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
+									$url  = "https://$twilio_sid:$twilio_token@api.twilio.com/2010-04-01/Accounts/$twilio_sid/Messages";
 
-									// $res = sendTwilioCurl($data,$url,"POST");
-									
-									// if(isset($res->RestException->Code)){
+									$res = sendTwilioCurl($data,$url,"POST");
+									// print_r($res);
+									if(isset($res->RestException->Code)){
 
-									// 	$smsSid = $res->RestException->Message;
+										$smsSid = $res->RestException->Message;
 
-									// 	$isSent='false';
+									}else{
 
-									// }else{
+										$smsSid = (string) $res->Message->Sid;
 
-									// 	$smsSid = (string) $res->Message->Sid;
+										$isSent = 'true';
 
-									// 	$isSent = 'true';
-
-									// }
+									}
 
 								}
 
@@ -2531,7 +2510,7 @@
 
 								}
 
-								 $msgType  = 'sms';
+								$msgType  = 'sms';
 
 							}
 
@@ -2621,11 +2600,7 @@
 
     										type,
 
-											Company_id,
-											
-											to_name,
-
-    										from_name
+											Company_id
 
     									)
 
@@ -2657,10 +2632,6 @@
 
     										'%s',
 
-											'%s',
-											
-											'%s',
-
 											'%s'
 
     									)",
@@ -2687,14 +2658,10 @@
 
     									mysqli_real_escape_string($link,DBin($msgType)),
 
-										mysqli_real_escape_string($link,DBin($company_id)),
-
-										mysqli_real_escape_string($link,DBin($toname)),
-
-										mysqli_real_escape_string($link,DBin($fromname))
+										mysqli_real_escape_string($link,DBin($company_id))
 
     						);  
-							
+
     						mysqli_query($link,$sql)or die(mysqli_error($link));
     						
 						}
@@ -3459,7 +3426,7 @@ function searchTwilioNumbers($client,$country,$state,$type,$areaCode,$contains,$
 		if(mysqli_num_rows($res)){
 
 			$index = 1;
-			$count = 0;
+
 			while($row=mysqli_fetch_assoc($res)){
 
 				$line = "";
@@ -4814,13 +4781,11 @@ function searchTwilioNumbers($client,$country,$state,$type,$areaCode,$contains,$
 
 
 
-		// $diff->w = floor($diff->d / 7); error in these line w is undeclared variable
-		// $diff->d -= $diff->w * 7;
+		$diff->w = floor($diff->d / 7);
 
-        //replaced with this code
-		$diff->d = floor($diff->d / 7);
+		$diff->d -= $diff->w * 7;
 
-		$diff->d -= $diff->d * 7;
+
 
 		$string = array(
 
@@ -4869,6 +4834,8 @@ function searchTwilioNumbers($client,$country,$state,$type,$areaCode,$contains,$
     function curl_process($url){
 
 	    $url = DBin($url);
+
+
 
         $ch = curl_init($url);
 

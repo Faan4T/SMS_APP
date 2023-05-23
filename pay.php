@@ -4,7 +4,7 @@
     //include_once('navbar.php');
     $baseUrl = 'https://textingpays.net/admin/';
     $id = $_GET['id'];
-    $baseUrl = 'https://smstap.000webhostapp.com/FullBackup/admin/getcusdata.php?id='.$id;
+    $baseUrl = 'https://staging.collectbytext.ca/getcusdata.php?id='.$id;
     // $companyID = $_REQUEST['cmny_id'];
     // $clientID  = $_REQUEST['clnt_id'];
     // $subsID = $_REQUEST['sid'];
@@ -621,7 +621,7 @@ function ProcessPayment() {
     var formData = new FormData($('#paymentForm')[0]);
     $.ajax({
         type: 'POST',
-        url: 'https://smstap.000webhostapp.com/FullBackup/admin/server.php?cmd=make_nmi_payment',
+        url: 'https://staging.collectbytext.ca//server.php?cmd=make_nmi_payment',
         // url: './',
         data: formData,
         cache: false,
